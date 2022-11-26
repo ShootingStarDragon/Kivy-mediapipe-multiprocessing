@@ -12,9 +12,7 @@ import dill
 '''
 
 mp_drawing = mp.solutions.drawing_utils # Drawing helpers
-# mp_holistic = mp.solutions.holistic # Mediapipe Solutions
-# https://stackoverflow.com/questions/69722401/mediapipe-process-first-self-argument
-# alternatively you could do: results = mp_hands.Hands().process(imgRGB)
+mp_holistic = mp.solutions.holistic # Mediapipe Solutions
 
 import time
 import sys
@@ -57,79 +55,42 @@ def parallelize_cv_decorator(*argsS):
     return cv_func_test2
 
 def cv_func_mp(retVAR, frameVAR):
-    ret = retVAR
-    frame = frameVAR
-    
-    # Recolor Feed
-    image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-    image.flags.writeable = False        
-    
-    time_1 = time.time()
-
-    # Make Detections
-    results = mp.solutions.holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=0.5).process(image)
-    time_2 = time.time()
-    print("why is this so slow?", time_2 - time_1, 1/60,  flush= True)
-    
-    # Recolor image back to BGR for rendering
-    image.flags.writeable = True   
-    image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
-    
-    # 2. Right hand
-    mp_drawing.draw_landmarks(image, results.right_hand_landmarks, mp.solutions.holistic.HAND_CONNECTIONS, 
-                                mp_drawing.DrawingSpec(color=(80,22,10), thickness=2, circle_radius=4),
-                                mp_drawing.DrawingSpec(color=(80,44,121), thickness=2, circle_radius=2)
-                                )
-
-    # 3. Left Hand
-    mp_drawing.draw_landmarks(image, results.left_hand_landmarks, mp.solutions.holistic.HAND_CONNECTIONS, 
-                                mp_drawing.DrawingSpec(color=(121,22,76), thickness=2, circle_radius=4),
-                                mp_drawing.DrawingSpec(color=(121,44,250), thickness=2, circle_radius=2)
-                                )
-
-    # 4. Pose Detections
-    mp_drawing.draw_landmarks(image, results.pose_landmarks, mp.solutions.holistic.POSE_CONNECTIONS, 
-                                mp_drawing.DrawingSpec(color=(245,117,66), thickness=2, circle_radius=4),
-                                mp_drawing.DrawingSpec(color=(245,66,230), thickness=2, circle_radius=2)
-                                )
-
-    # # Initiate holistic model
-    # with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=0.5) as holistic:
-    #     ret = retVAR
-    #     frame = frameVAR
+    # Initiate holistic model
+    with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=0.5) as holistic:
+        ret = retVAR
+        frame = frameVAR
         
-    #     # Recolor Feed
-    #     image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-    #     image.flags.writeable = False        
+        # Recolor Feed
+        image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        image.flags.writeable = False        
         
-    #     time_1 = time.time()
-
-    #     # Make Detections
-    #     results = holistic.process(image)
-    #     time_2 = time.time()
-    #     print("why is this so slow?", time_2 - time_1, 1/60,  flush= True)
+        time_1 = time.time()
+        # Make Detections
+        results = holistic.process(image)
+        time_2 = time.time()
+        print("why is this so slow?", time_2 - time_1, 1/60,  flush= True)
         
-    #     # Recolor image back to BGR for rendering
-    #     image.flags.writeable = True   
-    #     image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+        # Recolor image back to BGR for rendering
+        image.flags.writeable = True   
+        image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
         
-    #     # 2. Right hand
-    #     mp_drawing.draw_landmarks(image, results.right_hand_landmarks, mp_holistic.HAND_CONNECTIONS, 
-    #                                 mp_drawing.DrawingSpec(color=(80,22,10), thickness=2, circle_radius=4),
-    #                                 mp_drawing.DrawingSpec(color=(80,44,121), thickness=2, circle_radius=2)
-    #                                 )
+        # 2. Right hand
+        mp_drawing.draw_landmarks(image, results.right_hand_landmarks, mp_holistic.HAND_CONNECTIONS, 
+                                    mp_drawing.DrawingSpec(color=(80,22,10), thickness=2, circle_radius=4),
+                                    mp_drawing.DrawingSpec(color=(80,44,121), thickness=2, circle_radius=2)
+                                    )
 
-    #     # 3. Left Hand
-    #     mp_drawing.draw_landmarks(image, results.left_hand_landmarks, mp_holistic.HAND_CONNECTIONS, 
-    #                                 mp_drawing.DrawingSpec(color=(121,22,76), thickness=2, circle_radius=4),
-    #                                 mp_drawing.DrawingSpec(color=(121,44,250), thickness=2, circle_radius=2)
-    #                                 )
+        # 3. Left Hand
+        mp_drawing.draw_landmarks(image, results.left_hand_landmarks, mp_holistic.HAND_CONNECTIONS, 
+                                    mp_drawing.DrawingSpec(color=(121,22,76), thickness=2, circle_radius=4),
+                                    mp_drawing.DrawingSpec(color=(121,44,250), thickness=2, circle_radius=2)
+                                    )
 
-    #     # 4. Pose Detections
-    #     mp_drawing.draw_landmarks(image, results.pose_landmarks, mp_holistic.POSE_CONNECTIONS, 
-    #                                 mp_drawing.DrawingSpec(color=(245,117,66), thickness=2, circle_radius=4),
-    #                                 mp_drawing.DrawingSpec(color=(245,66,230), thickness=2, circle_radius=2)
-    #                                 )
+        # 4. Pose Detections
+        mp_drawing.draw_landmarks(image, results.pose_landmarks, mp_holistic.POSE_CONNECTIONS, 
+                                    mp_drawing.DrawingSpec(color=(245,117,66), thickness=2, circle_radius=4),
+                                    mp_drawing.DrawingSpec(color=(245,66,230), thickness=2, circle_radius=2)
+                                    )
     return image
 
 if __name__ == '__main__':
