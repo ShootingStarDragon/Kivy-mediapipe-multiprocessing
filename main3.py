@@ -1,5 +1,6 @@
 import mediapipe as mp # Import mediapipe
 import cv2 # Import opencv
+from icecream import ic
 mp_drawing = mp.solutions.drawing_utils 
 mp_holistic = mp.solutions.holistic 
 import time
@@ -9,14 +10,14 @@ times = []
 
 # remove all files from frames folder
 def remove_files():
-    for file in os.listdir("frames")[:-1]:
+    for file in os.listdir("frames"):
         os.remove(os.path.join("frames", file))
 
 remove_files()
 
 cap = cv2.VideoCapture(0)
 with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=0.5) as holistic:
-    number_of_files = 0
+    # number_of_files = 0
     
     while cap.isOpened():
         ret, frame = cap.read()
@@ -49,16 +50,16 @@ with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=
 
         # print(type(image))
         # write image to file on frames folder
-        np.save(f"frames/frame_{len(os.listdir('frames'))+1}.raw", image)
+        next_frame_number = len(os.listdir('frames'))+1
+        ic(next_frame_number)
+        np.save(f"frames/frame_{next_frame_number}.raw", image)
 
         # print("fps", 1/(sum(times)/len(times)), flush=True)
 
+        number_of_files = len(os.listdir("frames"))
         if number_of_files > 60:
             remove_files()
-            number_of_files = 0
-        else:
-            number_of_files += 1
-
+        print("number of files", number_of_files, flush=True) 
 
         if cv2.waitKey(10) & 0xFF == ord('q'):
             break
