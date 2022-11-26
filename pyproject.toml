@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "fastcvapp"
+version = "0.1.0"
+description = "Create a computer vision app FAST! Multiprocessing made easy, right out of the box."
+authors = ["ShootingStarDragon"]
+license = "MIT License"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+Kivy = "^2.1.0"
+opencv-python = "^4.6.0.66"
+pydantic = "^1.10.2"
+numpy = "^1.23.4"
+dill = "^0.3.6"
+mediapipe = "^0.9.0"
+trio = "^0.22.0"
+
+[tool.poetry.group.dev.dependencies]
+black = "^22.10.0"
+PySnooper = "^1.1.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
